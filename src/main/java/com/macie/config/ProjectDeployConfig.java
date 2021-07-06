@@ -9,10 +9,7 @@ import java.io.File;
  * @date 2020/11/9 -1:08
  */
 public class ProjectDeployConfig {
-    public static Boolean IS_REMOTE_DEPLOY = null;
-
-
-    /** 工程部署路径,如 windows上为 MyBlog_SSM\webapp, 服务器为/MyBlog_SSM的绝对路径  **/
+    /** 工程部署路径,如 windows上为 MyBlog_SSM/webapp, 服务器为/MyBlog_SSM的绝对路径  **/
     public static File WEB_DEPLOY_PATH;
 
     /** 工程根目录路径 ,MyBlog_SSM的同级目录 **/

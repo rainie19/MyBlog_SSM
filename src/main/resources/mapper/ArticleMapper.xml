@@ -25,14 +25,14 @@
         WHERE article_id = #{articleId}
     </select>
 
-    <insert id="insertNewArticle" useGeneratedKeys="true" parameterType="com.macie.entity.Article">
+    <insert id="insertNewArticle" useGeneratedKeys="true" parameterType="com.macie.entity.Article" keyProperty="articleId">
         INSERT INTO article_details
             (article_id, article_title, article_slug, article_author, article_summary, category_name,
-            article_create_time, article_content_md, article_content_html, article_view_count, article_comments_count)
+            article_create_time, article_content_md, article_content_html)
         VALUES
             (#{articleId}, #{articleTitle}, #{articleSlug},
             #{articleAuthor}, #{articleSummary}, #{categoryName}, #{articleCreateTime},
-            #{articleContentMd}, #{articleContentHtml}, #{articleViewCount}, #{articleCommentsCount})
+            #{articleContentMd}, #{articleContentHtml})
     </insert>
 
     <update id="updateArticle" parameterType="com.macie.entity.Article">

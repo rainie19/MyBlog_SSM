@@ -27,8 +27,8 @@
     </delete>
 
     <insert id="insertNewCategory" parameterType="com.macie.entity.Category">
-        INSERT INTO blog_category (category_name, create_date, category_delete)
-        VALUES (#{categoryName}, now(), #{categoryDelete})
+        INSERT INTO blog_category (category_name, create_date)
+        VALUES (#{categoryName}, now())
     </insert>
 
     <select id="isCategoryExists" resultType="java.lang.Boolean">

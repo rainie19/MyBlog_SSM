@@ -1,18 +1,21 @@
 package com.macie.util;
 
 import com.macie.common.CommonConstants;
+import com.macie.common.ResponseCode;
 import com.macie.config.ProjectDeployConfig;
+import com.macie.exception.BusinessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 
 /**
  * @author Macie
  * @date 2021/10/10 -0:59
  */
 public class ImageUploadUtil {
+    private static final Logger log = LoggerFactory.getLogger(ImageUploadUtil.class);
+
     /**
      * 存储图片
      * @param image
@@ -41,7 +44,8 @@ public class ImageUploadUtil {
             //返回相对路径
             userAvatarPath = CommonConstants.IMAGE_UPLOAD_PATH + path + "/" + imageName;
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("文件上传错误", e );
+            throw new BusinessException(ResponseCode.UPLOAD_FILE_ERROR);
         }
         return userAvatarPath;
     }

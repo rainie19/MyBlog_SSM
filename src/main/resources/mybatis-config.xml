@@ -7,5 +7,6 @@
 <!--        <setting name="useGenerateKeys" value="true"/>-->
         <!-- 使用驼峰命名 -->
         <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="logImpl" value="SLF4J"/>
     </settings>
 </configuration>

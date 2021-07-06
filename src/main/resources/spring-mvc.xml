@@ -10,10 +10,30 @@
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
-    <context:component-scan base-package="com.macie.controller"/>
+    <context:component-scan base-package="com.macie.controller, com.macie.config">
+    </context:component-scan>
     <!-- 防止拦截静态资源 -->
     <mvc:default-servlet-handler />
-    <mvc:annotation-driven />
+    <mvc:annotation-driven conversion-service="conversionService"/>
+
+    <!-- 配置converter -->
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.macie.config.converter.StringToArticleConverter"/>
+            </set>
+        </property>
+    </bean>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/publishArticle"/>
+            <mvc:mapping path="/deleteArticle"/>
+            <mvc:mapping path="/modifyUserInfo"/>
+            <mvc:mapping path="/delete*"/>
+            <bean id="loginInterceptor" class="com.macie.config.interceptor.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
     <!-- 文件上传 -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

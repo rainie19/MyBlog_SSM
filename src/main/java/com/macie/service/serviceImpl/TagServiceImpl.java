@@ -9,7 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Macie
@@ -21,12 +22,14 @@ public class TagServiceImpl implements TagService {
     public TagDao tagDao;
 
     @Override
-    public TreeMap<Integer, ArrayList<Tag>> getArticleTagMap(ArrayList<Article> Articles) {
-        TreeMap<Integer, ArrayList<Tag>>  tMap = new TreeMap<>();
-        for(Article Article : Articles) {
-            Integer article_id = Article.getArticleId();
-            ArrayList<Tag> TagArrayList = tagDao.getTagsByArticleId(article_id);
-            tMap.put(article_id, TagArrayList);
+    public Map<Integer, ArrayList<Tag>> getArticleTagMap(ArrayList<Article> articles) {
+        Map<Integer, ArrayList<Tag>>  tMap = new HashMap<>();
+        for(Article article : articles) {
+            Integer articleId = article.getArticleId();
+            if(articleId != null) {
+                ArrayList<Tag> TagArrayList = tagDao.getTagsByArticleId(articleId);
+                tMap.put(articleId, TagArrayList);
+            }
         }
         return tMap;
     }

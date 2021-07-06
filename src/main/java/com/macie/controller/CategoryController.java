@@ -2,17 +2,15 @@ package com.macie.controller;
 
 import com.macie.dto.JsonResponse;
 import com.macie.entity.Category;
-import com.macie.service.CategoryService;
+import com.macie.service.serviceImpl.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @author Macie
@@ -32,7 +30,7 @@ public class CategoryController {
     @RequestMapping("/getAllCategories")
     public JsonResponse getAllCategories() {
         ArrayList<Category> categories = categoryService.listAllCategories();
-        TreeMap<String, Long> articlesCount = null;
+        Map<String, Long> articlesCount = null;
         if (categories != null) {
             articlesCount = categoryService.countArticlesEachCategory(categories);
         }
@@ -49,7 +47,7 @@ public class CategoryController {
      * @return
      */
     @RequestMapping("/deleteCategory")
-    public JsonResponse deleteCategory(@RequestParam("categoryId") Integer categoryId) {
+    public JsonResponse deleteCategory(@Min(value = 1) Integer categoryId) {
         //把要删除分类下的文章都移到默认分类中
         categoryService.updateCategory2Default(categoryId);
         categoryService.deleteCategoryById(categoryId);

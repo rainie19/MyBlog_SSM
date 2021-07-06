@@ -1,4 +1,4 @@
-package com.macie.service;
+package com.macie.service.serviceImpl;
 
 import com.macie.dao.ArticleDao;
 import com.macie.dao.CategoryDao;
@@ -6,7 +6,8 @@ import com.macie.dao.TagDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.TreeMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Macie
@@ -27,8 +28,8 @@ public class AllCountService {
      * 获取概览文章,分类，标签数
      * @return
      */
-    public TreeMap<String, Long> getAllCount() {
-        TreeMap<String, Long> countMap = new TreeMap<>();
+    public Map<String, Long> getAllCount() {
+        Map<String, Long> countMap = new HashMap<>();
         Long articlesTotalCount = articleDao.countAllArticles();
         Long categoriesTotalCount = categoryDao.countAllCategories();
         Long tagsTotalCount = tagDao.countAllTags();

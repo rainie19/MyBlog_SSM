@@ -3,7 +3,6 @@ package com.macie.dao;
 import com.macie.entity.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.jmx.export.annotation.ManagedOperation;
 
 /**
  * @author Macie

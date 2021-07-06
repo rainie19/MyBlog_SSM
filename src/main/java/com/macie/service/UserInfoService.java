@@ -1,12 +1,17 @@
 package com.macie.service;
 
 import com.macie.entity.UserInfo;
-import org.apache.ibatis.annotations.Param;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author Macie
  * @date 2020/11/2 -20:52
  */
+@Validated
 public interface UserInfoService {
 
     /**
@@ -15,7 +20,7 @@ public interface UserInfoService {
      * @param userName
      * @return
      */
-    public UserInfo getUserInfoByUserName(String userName);
+    UserInfo getUserInfoByUserName(@NotBlank @Length(min = 3, max = 20) String userName);
 
     /**
      * 获取密码
@@ -23,24 +28,22 @@ public interface UserInfoService {
      * @param userName
      * @return
      */
-    public String getPwdByUserName(String userName);
+    String getPwdByUserName(@NotBlank @Length(min = 3, max = 20) String userName);
 
     /**
      * 更新用户信息
-     *
-     * @param userInfo
+     *  @param userInfo
      * @param oldUserName
-     * @return
-     */
-    public int updateUserInfo(UserInfo userInfo, String oldUserName);
+     * */
+    void updateUserInfo(@Valid UserInfo userInfo, @NotBlank @Length(min = 5, max = 15) String oldUserName);
 
     /**
      * 更新用户密码
-     *
      * @param userName
      * @param oldPwd
      * @param newPwd
-     * @return
      */
-    Boolean updatePassWord(String userName, String oldPwd, String newPwd);
+    void updatePassWord(@NotBlank @Length(min = 3, max = 20) String userName,
+                        @NotBlank @Length(min = 5, max = 15) String oldPwd,
+                        @NotBlank @Length(min = 5, max = 15) String newPwd);
 }

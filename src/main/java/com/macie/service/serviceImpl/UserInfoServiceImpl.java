@@ -1,7 +1,9 @@
 package com.macie.service.serviceImpl;
 
+import com.macie.common.ResponseCode;
 import com.macie.dao.UserInfoDao;
 import com.macie.entity.UserInfo;
+import com.macie.exception.BusinessException;
 import com.macie.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,17 +28,20 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public int updateUserInfo(UserInfo userInfo, String oldUserName) {
-        return userInfoDao.updateUserInfo(userInfo, oldUserName);
+    public void updateUserInfo(UserInfo userInfo, String oldUserName) {
+        if(userInfoDao.updateUserInfo(userInfo, oldUserName) == 0) {
+            throw new BusinessException(ResponseCode.USERPROFILE_UPDATE_ERROR);
+        }
     }
 
     @Override
-    public Boolean updatePassWord(String userName, String oldPwd, String newPwd) {
+    public void updatePassWord(String userName, String oldPwd, String newPwd) {
         String currentPwd = userInfoDao.getPwdByUserName(userName);
-        if(currentPwd != null && currentPwd.equals(oldPwd)){
-            userInfoDao.updatePwd(userName, newPwd);
-            return true;
+        if(!currentPwd.equals(oldPwd)) {
+            throw new BusinessException(ResponseCode.USERACOUNT_OLDPWD_ERROR);
         }
-        return false;
+        if(userInfoDao.updatePwd(userName, newPwd) == 0) {
+            throw new BusinessException(ResponseCode.USERACOUNT_UPDATE_ERROR);
+        }
     }
 }

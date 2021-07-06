@@ -1,5 +1,8 @@
 package com.macie.entity;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -8,17 +11,35 @@ import java.util.Date;
  */
 public class Article {
     private Integer articleId;
+
+    @NotBlank(message = "文章标题不能为空")
+    @Length(min = 3, max = 30, message = "文章标题长度为3-30个字符")
     private String articleTitle;
+
+    @NotBlank(message = "英文标题不能为空")
+    @Length(min = 3, max = 40, message = "英文标题长度为3-40个字符")
     private String articleSlug;
+
+    @NotBlank(message = "文章作者名不能为空")
     private String articleAuthor;
+
     private Date articleCreateTime;
+
     private Integer articleViewCount;
+
     private Integer articleCommentsCount;
+
+    @NotBlank(message = "文章摘要不能为空")
+    @Length(max = 200, message = "文章摘要不能大于 200 个字符")
     private String articleSummary;
+
     private String articleContentHtml;
-    private String categoryName;
+
     private String articleContentMd;
-    private Integer articleDelete;
+
+    @NotBlank(message = "请为文章选择一个分类")
+    @Length(min = 1, max = 10, message = "分类长度为1-10个字符")
+    private String categoryName;
 
     @Override
     public String toString() {
@@ -34,7 +55,6 @@ public class Article {
                 ", articleContentHtml='" + articleContentHtml + '\'' +
                 ", categoryId=" + categoryName +
                 ", articleContentMd='" + articleContentMd + '\'' +
-                ", articleDelete=" + articleDelete +
                 '}';
     }
 
@@ -123,14 +143,6 @@ public class Article {
 
     public void setArticleSummary(String articleSummary) {
         this.articleSummary = articleSummary;
-    }
-
-    public Integer getArticleDelete() {
-        return articleDelete;
-    }
-
-    public void setArticleDelete(Integer articleDelete) {
-        this.articleDelete = articleDelete;
     }
 
 }

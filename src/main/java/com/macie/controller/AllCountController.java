@@ -1,15 +1,13 @@
 package com.macie.controller;
 
 import com.macie.dto.JsonResponse;
-import com.macie.service.AllCountService;
+import com.macie.service.serviceImpl.AllCountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @author Macie
@@ -21,9 +19,13 @@ public class AllCountController {
     @Autowired
     private AllCountService allCountService;
 
+    /**
+     * 获取文章，分类，标签总数
+     * @return
+     */
     @RequestMapping("/getAllCount")
     public JsonResponse getAllCount() {
-        TreeMap<String, Long> countMap = allCountService.getAllCount();
+        Map<String, Long> countMap = allCountService.getAllCount();
         Map<String, Object> map = new HashMap();
         map.put("AllCount", countMap);
         return JsonResponse.responseOK(map);

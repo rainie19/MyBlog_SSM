@@ -1,24 +1,22 @@
 package com.macie.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.macie.dto.JsonResponse;
 import com.macie.entity.Article;
 import com.macie.entity.Tag;
 import com.macie.service.ArticleService;
 import com.macie.service.TagService;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * @author Macie
@@ -35,29 +33,18 @@ public class ArticleController {
     /**
      * 获取某条件下的所有文章
      *
-     * @param requestMap
-     * @return
      */
     @RequestMapping("/getArticles")
-    public JsonResponse getArticles(@RequestParam Map<String, String> requestMap) {
-        Integer queryPage = null, pageSize = null;
-        String queryType = requestMap.get("queryType");
-        String queryName = requestMap.get(queryType);
-        if (requestMap.get("queryPage") != null) {
-            queryPage = Integer.valueOf(requestMap.get("queryPage"));
-        }
-        if (requestMap.get("pageSize") != null) {
-            pageSize = Integer.valueOf(requestMap.get("pageSize"));
-        }
+    public JsonResponse getArticles(String queryType,  @Min(value = 0) Integer queryPage,  @Min(value = 0) Integer pageSize, String queryName) {
         Map<String, Object> map = new HashMap();
         Long totalCount = articleService.countArticles(queryType, queryName);
-        ArrayList<Article> articleVos = articleService.listArticles(queryType, queryPage, pageSize, queryName);
-        TreeMap<Integer, ArrayList<Tag>> articleTagMap = null;
-        if (articleVos != null) {
-            articleTagMap = tagService.getArticleTagMap(articleVos);
+        ArrayList<Article> articles = articleService.listArticles(queryType, queryPage, pageSize, queryName);
+        Map<Integer, ArrayList<Tag>> articleTagMap = null;
+        if (articles != null) {
+            articleTagMap = tagService.getArticleTagMap(articles);
         }
 
-        map.put("articles", articleVos);
+        map.put("articles", articles);
         map.put("articleTotalCount", totalCount);
         map.put("articleIdTagsMap", articleTagMap);
 
@@ -71,8 +58,7 @@ public class ArticleController {
      * @return
      */
     @RequestMapping("/getArticleDetail")
-    public JsonResponse getArticleDetail(@RequestParam("articleId") Integer articleId) {
-
+    public JsonResponse getArticleDetail(@Min(value = 1) Integer articleId) {
         Article article = articleService.getArticle(articleId);
         // 映射article_id和tags
         ArrayList<Tag> tagVoArrayList = tagService.retrieveTagsByArticleId(articleId);
@@ -99,7 +85,7 @@ public class ArticleController {
      * @return
      */
     @RequestMapping("/deleteArticle")
-    public JsonResponse deleteArticle(@RequestParam("articleId") Integer articleId) {
+    public JsonResponse deleteArticle(@Min(value = 1) Integer articleId) {
         articleService.deleteArticle(articleId);
         Map<String, Object> map = new HashMap();
         return JsonResponse.responseOK();
@@ -108,23 +94,18 @@ public class ArticleController {
     /**
      * 发布文章
      *
-     * @param articleDetail
+     * @param article
      * @param dynamicTags
      * @param publishType
      */
     @RequestMapping("/publishArticle")
-    public JsonResponse publishArticle(@RequestParam("article") String articleDetail, @RequestParam("dynamicTags") String dynamicTags, @RequestParam("publishType") String publishType) throws JsonProcessingException {
-        System.out.println("article:"+ articleDetail);
-//        dynamicTags = StringUtils.strip(dynamicTags, "[]");
-        ObjectMapper mapper = new ObjectMapper();
-        Article article = mapper.readValue(articleDetail, Article.class);
-        ArrayList<String> tags = mapper.readValue(dynamicTags, ArrayList.class);
-//        ArrayList<String> tags = new ArrayList<>(Arrays.asList(dynamicTags.split(",")));
-        Article responseArticle = articleService.publishArticle(article, tags, publishType);
+    public JsonResponse publishArticle(@Validated Article article, String dynamicTags, @NotBlank String publishType) {
+        dynamicTags = StringUtils.trimAllWhitespace(dynamicTags);
+        String[] tags = StringUtils.delimitedListToStringArray(dynamicTags, ",", "[\"]");
+        Article responseArticle = articleService.publishArticle(article, Arrays.asList(tags), publishType);
 
         Map<String, Object> map = new HashMap();
         map.put("article", responseArticle);
         return JsonResponse.responseOK(map);
     }
-
 }

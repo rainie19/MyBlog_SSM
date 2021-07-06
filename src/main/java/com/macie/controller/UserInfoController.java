@@ -5,13 +5,14 @@ import com.macie.dto.JsonResponse;
 import com.macie.entity.UserInfo;
 import com.macie.service.UserInfoService;
 import com.macie.util.ImageUploadUtil;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,8 +32,8 @@ public class UserInfoController {
      * @return
      */
     @RequestMapping("/getUserInfo")
-    public JsonResponse getUserInfo(@RequestParam("userName") String userName) {
-        Map<String, Object> map = new HashMap();
+    public JsonResponse getUserInfo(@NotBlank @Length(min = 3, max = 20) String userName) {
+        Map<String, Object> map = new HashMap<>();
         UserInfo userInfo = userInfoService.getUserInfoByUserName(userName);
         map.put("userInfo", userInfo);
         return JsonResponse.responseOK(map);
@@ -43,12 +44,8 @@ public class UserInfoController {
      *
      */
     @PostMapping("/modifyUserInfo")
-    public void modifyUserInfo(UserInfo userInfo, @RequestParam("type") String type,
-                               @RequestParam(value = "userAvatar", required = false) MultipartFile userAvatar,
-                               @RequestParam(value = "oldUserName", required = false) String oldUserName,
-                               @RequestParam(value = "oldPassWd", required = false) String oldPassWd,
-                               @RequestParam(value = "newPassWd", required = false) String newPassWd) {
-        System.out.println("modifyUserInfo:"+ userInfo);
+    public JsonResponse modifyUserInfo(UserInfo userInfo, @NotBlank String type, MultipartFile userAvatar,
+                                       String oldUserName, String oldPassWd, String newPassWd) {
         if("profile".equals(type)) {
             userInfoService.updateUserInfo(userInfo, oldUserName);
             if(userAvatar != null && !userAvatar.isEmpty()) {
@@ -62,6 +59,6 @@ public class UserInfoController {
         else if("account".equals(type)) {
             userInfoService.updatePassWord(userInfo.getUserName(), oldPassWd, newPassWd);
         }
-
+        return JsonResponse.responseOK();
     }
 }

@@ -1,5 +1,8 @@
 package com.macie.entity;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -8,9 +11,12 @@ import java.util.Date;
  */
 public class Category {
     private Integer categoryId;
+
+    @NotBlank(message = "分类名称不能为空")
+    @Length(max = 10, message = "分类名称不能超过10字符")
     private String categoryName;
+
     private Date createDate;
-    private Integer categoryDelete;
 
     public Integer getCategoryId() {
         return categoryId;
@@ -36,11 +42,12 @@ public class Category {
         this.createDate = createDate;
     }
 
-    public Integer getCategoryDelete() {
-        return categoryDelete;
-    }
-
-    public void setCategoryDelete(Integer categoryDelete) {
-        this.categoryDelete = categoryDelete;
+    @Override
+    public String toString() {
+        return "Category{" +
+                "categoryId=" + categoryId +
+                ", categoryName='" + categoryName + '\'' +
+                ", createDate=" + createDate +
+                '}';
     }
 }
